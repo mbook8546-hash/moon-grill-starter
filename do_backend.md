@@ -193,3 +193,82 @@ Settings body:
 Coupon: `{"id","code","kind":"percent|flat|free_delivery","value","min_order","max_discount","uses","max_uses","per_customer","starts","ends","active"}`
 Review: `{"id","order_code","customer","rating","food","delivery","comment","at","reply","hidden"}`
 Audit: `{"id","at","actor","role","action","target","category":"order|payment|menu|staff|settings|refund"}`
+
+---
+
+## E. SaaS plan, limits & owner self-service (appended — required for the admin plan bar, locks, billing, support, viewing-as, shared settings, POS shifts)
+
+All `/admin/*` endpoints are scoped to the tenant from the JWT (`request.user` → membership → tenant). Never trust a slug from the body. Every mutation writes a row to the tenant audit log (`/admin/audit/`) and, for platform staff actions, to the platform audit log (`/platform/audit/`). Until an endpoint exists the UI falls back to sample data (404/405/501 = "not built").
+
+### E.1 Entitlement on login — `GET /admin/subscription/`
+Also embed the same object as `entitlement` in the login / `GET /auth/me/` response so the admin renders instantly.
+```json
+{"plan_slug":"growth","plan_name":"Growth","price_pkr":4999,
+ "status":"active|trialing|past_due|suspended|cancelled",
+ "trial_ends_at":"2026-10-19T00:00:00Z","renews_at":"2026-11-01T00:00:00Z","suspended_reason":null,
+ "features":{"pos":true,"whatsapp":true,"riders":true,"coupons":true,"reviews":true,"inventory":true,"branches":false,"reports":false},
+ "limits":{"orders_per_day":150,"staff_seats":8,"branches":1},
+ "usage":{"orders_today":112,"staff_seats":6,"branches":1}}
+```
+- `features` = plan defaults merged with per-tenant overrides set via `PATCH /platform/tenants/{slug}/features/`.
+- Unlimited = `100000` (UI shows ∞ for ≥ 99999).
+- `orders_today` counts non-cancelled orders since local midnight in the tenant timezone (Asia/Karachi). Cache in Redis key `usage:{tenant}:{date}` and increment on order create; rebuild nightly.
+- `status` transitions: trialing → active (first paid invoice) · active → past_due (invoice overdue, grace 3 days) → suspended (cron) · suspended → active (proof approved by platform). Run a daily Celery beat task `billing.enforce_status`.
+
+### E.2 Server-side enforcement (mandatory — hiding buttons is not security)
+Add a DRF permission/middleware `EntitlementGuard`:
+| Condition | Response |
+|---|---|
+| tenant `status` in `suspended,cancelled` | `402 {"code":"tenant_suspended","detail":"…"}` on every `/admin/*`, `/orders/` create, `/pos/*`, except `/admin/subscription/*`, `/admin/support/*`, `/admin/announcements/*`, `/auth/*` |
+| feature off | `403 {"code":"feature_locked","feature":"pos"}` — map: `pos`→`/admin/pos/*`, `whatsapp`→`/admin/whatsapp/*`, `riders`→rider assign/dispatch, `coupons`→`/admin/coupons/*` + coupon apply at checkout, `reviews`→`/admin/reviews/*`, `inventory`→`/admin/inventory/*`, `branches`→creating >1 branch, `reports`→`/admin/reports/*` |
+| new order over `orders_per_day` | `429 {"code":"limit_orders_per_day","limit":150}` (customer checkout shows "Restaurant is at capacity today") |
+| invite staff over `staff_seats` / create branch over `branches` | `409 {"code":"limit_staff_seats"}` / `{"code":"limit_branches"}` |
+Use `select_for_update` on the usage counter when creating orders to avoid races. The frontend should treat 402 by calling `refreshEntitlement()` (shows the paused screen) and 403/409/429 with an upgrade toast.
+
+### E.3 Plans & upgrade
+- `GET /admin/subscription/plans/` → `[{"slug","name","price_pkr","orders_per_day","staff_seats","branches","features":["pos",…]}]` (public plans only).
+- `POST /admin/subscription/upgrade/` `{"plan_slug":"pro"}` → creates a pending prorated invoice and returns it; plan switches when that invoice is marked paid. Downgrades take effect at `renews_at`. Owner role only.
+
+### E.4 Invoices & JazzCash proof (owner billing page)
+- `GET /admin/subscription/invoices/` → `[{"id","number","plan_name","amount_pkr","status":"pending|under_review|paid|overdue","period_start","period_end","due_date","paid_at","proof_url","pay_to":{"method":"JazzCash","number":"03xx…","title":"…"}}]`
+- `POST /admin/subscription/invoices/{id}/proof/` multipart `file` (image/* or pdf, ≤ 8 MB) + optional `reference` (JazzCash TID) → sets `status=under_review`, stores at `platform/invoices/{tenant}/{id}/…`, signed URL (15 min). Reject re-upload on `paid`. Notify platform (email + `/platform/invoices/` badge).
+- Platform reviews in its existing receipt viewer: `POST /platform/invoices/{id}/approve/` / `reject/ {reason}` → approve sets `paid_at`, reactivates a suspended tenant, audit log both sides.
+- `pay_to` comes from `/platform/settings/` (platform JazzCash number) — never hard-code.
+
+### E.5 Announcements
+- `GET /admin/announcements/` → `[{"id","title","body","level":"info|feature|warning","at","read"}]` (only those targeted at this tenant's plan or "all", not expired).
+- `POST /admin/announcements/{id}/read/` → per-user read receipt (table `announcement_reads(user, announcement)`).
+
+### E.6 Support tickets (appear on platform console `/platform/tickets/`)
+- `GET /admin/support/tickets/` · `POST /admin/support/tickets/` `{"subject","category","priority":"low|normal|high","body"}` → `{"id","subject","category","priority","status":"open|waiting|resolved","created_at","messages":[{"from":"restaurant|platform","author","body","at"}]}`
+- `POST /admin/support/tickets/{id}/reply/` `{"body"}`; optional `attachment` multipart.
+- Platform reply sets `status=waiting`; restaurant reply sets `open`. Email the owner on platform reply.
+
+### E.7 "Viewing as" (impersonation)
+- `POST /platform/tenants/{slug}/impersonate/` (superuser only) → returns a short-lived (30 min) access token with claims `{"tenant":slug,"impersonator_id":…,"role":"owner"}`. Write platform audit `Opened restaurant admin` + tenant audit row "Platform support viewed your admin".
+- Every request made with an impersonation token logs `actor = "<platform user> (as owner)"` in the tenant audit log.
+- `POST /platform/impersonation/end/` `{slug}` → revoke the token (blacklist jti), audit "Exited restaurant admin".
+- Block destructive owner actions while impersonating unless `?confirm=1` (delete tenant, change owner password, payout numbers).
+
+### E.8 One shared settings source (shop + POS + admin)
+- Admin edits stay at `GET/PATCH /admin/settings/` (body in section C).
+- New public read (no auth, cacheable 30 s): `GET /tenants/{slug}/settings/public/` →
+```json
+{"tax_percent":16,"service_charge_percent":0,"min_order":500,"delivery_fee":150,"free_delivery_over":3000,
+ "pause_online_orders":false,"pause_message":null,"is_open_now":true,"next_open_at":null,
+ "hours":[{"day":"Monday","open":"12:00","close":"00:00","closed":false}],"timezone":"Asia/Karachi"}
+```
+- `is_open_now`/`next_open_at` computed server-side from hours + holidays (handle closing after midnight).
+- Order create (shop **and** POS) must compute tax/service/delivery from these values server-side, ignore client totals, and reject with `409 {"code":"shop_closed"}` / `{"code":"orders_paused"}` for online orders (POS walk-in allowed while paused).
+- Invalidate the cache on PATCH and broadcast WebSocket `settings_updated` to the tenant channel.
+
+### E.9 POS shifts, cash moves & Z report on the server
+- `GET /admin/pos/shifts/current/` → open shift for this register/user or `null`: `{"id","opened_at","opened_by","opening_float","cash_moves":[{"id","kind":"in|out","amount","reason","at"}]}`
+- `POST /admin/pos/shifts/` `{"opening_float","client_id","register":"counter-1"}` — one open shift per register (409 if exists). `client_id` makes retries idempotent.
+- `POST /admin/pos/shifts/{id}/cash-moves/` `{"kind","amount","reason"}`
+- `POST /admin/pos/shifts/{id}/close/` `{"counted_cash","expected_cash"}` → server recomputes expected cash from its own orders + moves, stores difference, returns Z report: `{"shift_id","opened_at","closed_at","sales_count","gross","discounts","tax","service","refunds","voids","by_method":{"cash","card","jazzcash","easypaisa"},"expected_cash","counted_cash","difference"}`
+- `GET /admin/pos/shifts/?from=&to=` + `GET /admin/pos/shifts/{id}/z-report/` for the Billing & Z-Report page history.
+- POS orders carry `shift_id`; void/refund after close is only allowed for manager+ and appears on the next Z report.
+
+### E.10 Priority
+1. E.1 + E.2 (entitlement + enforcement) · 2. E.4 (invoices/proof) + E.7 · 3. E.8 shared settings · 4. E.9 shifts · 5. E.5, E.6, E.3.

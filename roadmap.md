@@ -5,3 +5,5 @@
 - [x] Write do_backend.md with every missing backend endpoint and payload.
 - [ ] Apply do_backend.md items to the Django backend (blocked: backend repo lives outside this project).
 - [x] Fix platform creation pop-ups at normal zoom and reduce platform/caddy card roundness.
+- [x] Admin SaaS UI: plan bar, feature locks, suspended screen, billing, announcements, support, viewing-as bar, shared shop status, server shift restore.
+- [ ] Backend for do_backend.md section E (blocked: backend repo lives outside this project).
