@@ -1,9 +1,17 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Lock, Menu, X } from "lucide-react";
+import { BarChart3, ClipboardList, Ellipsis, Lock, Menu, UtensilsCrossed, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+const MOBILE_GROUPS = [
+  { id: "orders", label: "Orders", icon: ClipboardList, paths: ["/admin/orders", "/admin/payments", "/admin/riders"] },
+  { id: "menu", label: "Menu", icon: UtensilsCrossed, paths: ["/admin/dishes", "/admin/inventory", "/admin/coupons"] },
+  { id: "insights", label: "Insights", icon: BarChart3, paths: ["/admin/reports", "/admin/billing", "/admin/activity"] },
+] as const;
 
 export type ConsoleNavItem = {
   to: string;
@@ -39,10 +47,19 @@ export function ConsoleShell({
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAdmin = nav.some((item) => item.to.startsWith("/admin"));
+  const matches = (item: ConsoleNavItem) => item.exact ? pathname === item.to || pathname === `${item.to}/` : pathname === item.to || pathname.startsWith(`${item.to}/`);
+  const home = nav.find((item) => item.to === "/admin") ?? nav.find((item) => item.to === "/admin/pos");
+  const groups = MOBILE_GROUPS.map((group) => ({ ...group, items: nav.filter((item) => group.paths.some((path) => path === item.to) && item !== home) })).filter((group) => group.items.length);
+  const remaining = nav.filter((item) => item !== home && !groups.some((group) => group.items.includes(item)));
+  const mobileGroups = [...groups, ...(remaining.length ? [{ id: "more", label: "More", icon: Ellipsis, items: remaining }] : [])];
+  const currentPage = nav.find(matches)?.label ?? title;
 
   useEffect(() => {
     setOpen(false);
+    setActiveGroup(null);
   }, [pathname]);
 
   useEffect(() => {
@@ -61,9 +78,9 @@ export function ConsoleShell({
         <div className="mt-2">{badge}</div>
       </div>
 
-      {sidebar}
+      {sidebar ? <div className="hidden lg:block">{sidebar}</div> : null}
 
-      <nav className="flex flex-col gap-1.5">
+      <nav aria-label="Console pages" className="flex flex-col gap-1.5">
         {nav.map(({ to, label, icon: Icon, exact, locked }) => (
           <Link
             key={to}
@@ -90,19 +107,22 @@ export function ConsoleShell({
     <div className={cn("console-shell min-h-screen text-frost", className)}>
       {/* Mobile top bar */}
       <header className="sticky top-0 z-40 lg:hidden">
-        <div className="flex items-center gap-3 border-b border-lux/15 bg-ink-deep/85 px-4 py-3 backdrop-blur-xl">
-        <button
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-lux/15 bg-ink-deep/95 px-4 py-2 backdrop-blur-xl">
+        <div className="min-w-0">
+          <p className="truncate text-[10px] font-bold text-mist">{brand}</p>
+          <p className="truncate text-sm font-bold text-frost">{currentPage}</p>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
           aria-label="Open menu"
+          aria-expanded={open}
+          title="All pages and account"
           onClick={() => setOpen(true)}
-          className="icon-3d h-10 w-10 text-lux transition-transform duration-200 active:scale-90"
+          className="h-10 w-10 shrink-0 text-lux hover:bg-lux/10"
         >
           <Menu className="h-4 w-4" />
-        </button>
-        <div className="min-w-0">
-          <p className="eyebrow leading-none">{brand}</p>
-          <p className="num-lux truncate text-lg leading-tight text-frost">{title}</p>
-        </div>
-        <div className="ml-auto shrink-0">{badge}</div>
+        </Button>
         </div>
         <div className="gold-bar" />
       </header>
@@ -110,19 +130,22 @@ export function ConsoleShell({
       {/* Mobile drawer */}
       {open ? (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <button
+          <Button
+            variant="ghost"
             aria-label="Close menu"
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-ink-deep/80 backdrop-blur-sm"
           />
-          <aside className="console-shell lux-rise absolute inset-y-0 left-0 w-[86%] max-w-xs overflow-y-auto border-r border-lux/20 shadow-lux-lift">
-            <button
+          <aside role="dialog" aria-modal="true" aria-label="All console pages" onKeyDown={(event) => { if (event.key === "Escape") setOpen(false); }} className="console-shell absolute inset-y-0 left-0 w-[86%] max-w-xs overflow-y-auto border-r border-lux/20 bg-ink-deep shadow-lux-lift">
+            <Button
+              variant="ghost"
+              size="icon"
               aria-label="Close menu"
               onClick={() => setOpen(false)}
               className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-lux/25 text-lux"
             >
               <X className="h-4 w-4" />
-            </button>
+            </Button>
             {rail}
           </aside>
         </div>
@@ -133,13 +156,52 @@ export function ConsoleShell({
           {rail}
         </aside>
 
-        <main className="min-w-0 flex-1 px-3 pb-28 pt-4 sm:px-6 lg:px-8 lg:pb-10 lg:pt-6">
+        <main className="console-main min-w-0 flex-1 px-3 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-4 sm:px-6 lg:px-8 lg:pb-10 lg:pt-6">
           {children}
         </main>
       </div>
 
       {/* Mobile bottom tabs */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-lux/15 bg-ink-deep/90 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
+      <nav aria-label="Mobile navigation" className="fixed inset-x-0 bottom-0 z-40 border-t border-lux/15 bg-ink-deep/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
+        {isAdmin ? (
+          <ul className="mx-auto flex max-w-lg items-stretch gap-1">
+            {home ? <li className="min-w-0 flex-1">
+              <Button asChild variant="ghost" className={cn("admin-mobile-tab", matches(home) && "admin-mobile-tab-active")}>
+                <Link to={home.to} activeOptions={{ exact: true }} aria-label={home.label} aria-current={matches(home) ? "page" : undefined}>
+                  <home.icon /><span>{home.to === "/admin" ? "Home" : "POS"}</span>
+                </Link>
+              </Button>
+            </li> : null}
+            {mobileGroups.map(({ id, label, icon: Icon, items }) => {
+              const active = items.some(matches);
+              return <li key={id} className="min-w-0 flex-1">
+                <Popover open={activeGroup === id} onOpenChange={(value) => setActiveGroup(value ? id : null)}>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" aria-label={`${label} options`} className={cn("admin-mobile-tab", (active || activeGroup === id) && "admin-mobile-tab-active")}>
+                      {activeGroup === id ? <X /> : <Icon />}<span>{label}</span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent side="top" sideOffset={14} collisionPadding={12} className="admin-mobile-options w-[min(340px,calc(100vw-24px))] border-lux/25 bg-ink-deep p-4 text-frost shadow-lux-lift lg:hidden" aria-label={`${label} pages`}>
+                    <div className="mb-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+                      <p className="text-sm font-bold">{label}</p>
+                      <Button size="icon" variant="ghost" aria-label={`Close ${label} options`} onClick={() => setActiveGroup(null)} className="h-8 w-8 text-mist hover:bg-lux/10"><X /></Button>
+                    </div>
+                    <div className="grid max-h-[min(420px,60dvh)] grid-cols-3 gap-x-2 gap-y-4 overflow-y-auto">
+                      {items.map((item) => <Button key={item.to} asChild variant="ghost" className="admin-mobile-option">
+                        <Link to={item.to} onClick={() => setActiveGroup(null)} aria-current={matches(item) ? "page" : undefined}>
+                          <span className={cn("admin-mobile-orbit", matches(item) && "admin-mobile-orbit-active")}>
+                            <item.icon />{item.locked ? <Lock className="admin-mobile-lock" aria-label="Upgrade to unlock" /> : null}
+                          </span>
+                          <span className="admin-mobile-option-label">{item.label}</span>
+                        </Link>
+                      </Button>)}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </li>;
+            })}
+          </ul>
+        ) : (
         <ul className="flex items-stretch">
           {nav.map(({ to, label, icon: Icon, exact }) => (
             <li key={to} className="min-w-0 flex-1">
@@ -157,6 +219,7 @@ export function ConsoleShell({
             </li>
           ))}
         </ul>
+        )}
       </nav>
     </div>
   );

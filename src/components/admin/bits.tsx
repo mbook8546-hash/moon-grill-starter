@@ -149,8 +149,8 @@ export function Panel({
   return (
     <section className={cn("panel-lux panel-lift lux-rise overflow-hidden", className)}>
       {title || action ? (
-        <header className="panel-hairline flex flex-wrap items-center justify-between gap-3 px-5 py-4">
-          <div>
+        <header className="panel-hairline grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:flex sm:flex-wrap sm:justify-between sm:px-5 sm:py-4">
+          <div className="min-w-0">
             {title ? (
               <h2 className="text-[11px] font-black uppercase tracking-[0.22em] text-frost">
                 {title}
@@ -158,7 +158,7 @@ export function Panel({
             ) : null}
             {subtitle ? <p className="mt-1 text-xs text-slate-dim">{subtitle}</p> : null}
           </div>
-          {action}
+          {action ? <div className="shrink-0">{action}</div> : null}
         </header>
       ) : null}
       <div className={cn("p-5", bodyClassName)}>{children}</div>
@@ -178,14 +178,14 @@ export function SectionTitle({
   action?: ReactNode;
 }) {
   return (
-    <div className="lux-rise flex flex-wrap items-end justify-between gap-4">
-      <div>
+    <div className="admin-section-title lux-rise grid min-w-0 gap-3 sm:flex sm:flex-wrap sm:items-end sm:justify-between sm:gap-4">
+      <div className="min-w-0">
         {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
         <h1 className="num-lux mt-1 text-3xl text-frost sm:text-4xl">{title}</h1>
         <div className="gold-bar mt-2 w-24 rounded-full" />
         {subtitle ? <p className="mt-2 max-w-2xl text-sm text-slate-dim">{subtitle}</p> : null}
       </div>
-      {action}
+      {action ? <div className="admin-section-actions min-w-0 shrink-0">{action}</div> : null}
     </div>
   );
 }
@@ -229,7 +229,7 @@ export function StatCard({
         <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-dim sm:tracking-[0.22em]">{label}</p>
         {icon ? <span className={cn("icon-3d shrink-0", t.text)}>{icon}</span> : null}
       </div>
-      <p className={cn("num-lux mt-2 text-2xl sm:mt-3 sm:text-3xl", t.text)}>{value}</p>
+      <p className={cn("num-lux mt-2 break-words text-xl sm:mt-3 sm:text-3xl", t.text)}>{value}</p>
       <div className="mt-1 flex items-center gap-2">
         {hint ? <p className="text-[11px] text-slate-dim">{hint}</p> : null}
         {typeof trend === "number" ? (
