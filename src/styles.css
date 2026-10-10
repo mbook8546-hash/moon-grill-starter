@@ -3881,9 +3881,6 @@ img[loading="lazy"]:not([style]) {
   .admin-caddy-shell .admin-dash-caddy > a.group > div:first-child { min-width: 0; gap: 8px; }
   .admin-caddy-shell .admin-dash-caddy > a.group > div:first-child > div:first-child { flex-shrink: 0; }
   .admin-caddy-shell .admin-dash-caddy > a.group > div:last-child { padding: 8px; font-size: 10px; flex-shrink: 0; }
-  .admin-caddy-shell .admin-dash-caddy .panel-lux { border-radius: 8px; transform: none; background: var(--color-panel); }
-  .admin-caddy-shell .admin-dash-caddy .panel-lux::before,
-  .admin-caddy-shell .admin-dash-caddy .panel-lux::after { display: none; }
   .admin-caddy-shell .admin-dash-caddy .card-3d { padding: 12px; }
   .admin-caddy-shell .admin-dash-caddy .card-3d .icon-3d { width: 26px; height: 26px; }
   .admin-caddy-shell .admin-dash-caddy .card-3d p { letter-spacing: 0; }
@@ -3946,112 +3943,50 @@ img[loading="lazy"]:not([style]) {
   .admin-dishes__card:hover .admin-dishes__media img { transform: none; }
 }
 
-/* Admin payments only: glassy 3D caddy cards. */
-.admin-payments .panel-lux {
-  border-color: oklch(from var(--color-lux) l c h / .24);
-  border-radius: 14px;
-  background:
-    linear-gradient(155deg, oklch(from var(--color-cream) l c h / .06), transparent 36%),
-    linear-gradient(160deg, oklch(from var(--color-panel) l c h / .58), oklch(from var(--color-panel-soft) l c h / .46));
-  backdrop-filter: blur(16px) saturate(1.2);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  box-shadow:
-    inset 0 1px 0 oklch(from var(--color-cream) l c h / .18),
-    inset 0 -20px 44px -32px oklch(from var(--color-lux) l c h / .5),
-    0 24px 48px -24px oklch(from var(--color-ink-deep) l c h / .9),
-    0 6px 0 -2px oklch(from var(--color-ink-deep) l c h / .55);
-  transform: perspective(1100px) rotateX(.35deg);
-  transition: transform .42s cubic-bezier(.34, 1.3, .64, 1), box-shadow .42s ease, border-color .42s ease;
-}
-.admin-payments .panel-lux:hover {
-  transform: perspective(1100px) rotateX(0deg) translateY(-5px);
-  border-color: oklch(from var(--color-lux) l c h / .45);
-  box-shadow:
-    inset 0 1px 0 oklch(from var(--color-cream) l c h / .26),
-    inset 0 -20px 48px -30px oklch(from var(--color-lux) l c h / .62),
-    0 38px 66px -28px oklch(from var(--color-ink-deep) l c h / .95),
-    0 9px 0 -2px oklch(from var(--color-ink-deep) l c h / .55);
-}
-@media (prefers-reduced-motion: reduce) {
-  .admin-payments .panel-lux,
-  .admin-payments .panel-lux:hover { transform: none; transition: none; }
-}
-
-/* ── Admin dashboard only: "caddy" 3D glass cards ─────────────────────
-   Inspired by the Uiverse 3D glass card: perspective tilt on hover,
-   floating glass circles in the corner, and a moving gold edge light.
-   Scoped under .admin-dash-caddy so other admin pages keep their look. */
+/* Shared admin glass surface: identical edge lighting at every viewport. */
 @property --caddy-angle {
   syntax: "<angle>";
   initial-value: 0deg;
   inherits: false;
 }
-
-@keyframes caddy-edge-spin {
-  to { --caddy-angle: 360deg; }
+@keyframes caddy-edge-spin { to { --caddy-angle: 360deg; } }
+@keyframes admin-card-enter { from { opacity: 0; } to { opacity: 1; } }
+.admin-caddy-shell {
+  --admin-glass-background: linear-gradient(155deg, oklch(from var(--color-cream) l c h / .07), transparent 38%), linear-gradient(160deg, var(--color-panel), var(--color-panel-soft));
+  --admin-glass-shadow: inset 0 1px 0 oklch(from var(--color-cream) l c h / .1), inset 0 -20px 44px -34px oklch(from var(--color-lux) l c h / .5), 0 24px 48px -26px oklch(from var(--color-ink-deep) l c h / .9), 0 5px 0 -1px oklch(from var(--color-ink-deep) l c h / .85);
+  --admin-glass-hover-shadow: inset 0 1px 0 oklch(from var(--color-cream) l c h / .16), inset 0 -22px 48px -32px oklch(from var(--color-lux) l c h / .7), 0 32px 60px -30px oklch(from var(--color-ink-deep) l c h / .95);
+  --admin-edge-light: oklch(from var(--color-cream) l c h / .85);
 }
-
-@keyframes caddy-orb-drift {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(-6px, 6px, 0) scale(1.06); }
+.admin-caddy-shell :is(.panel-lux, .admin-dishes__card, .admin-dishes__metric) {
+  position: relative;
+  min-width: 0;
+  border-radius: 8px;
+  border-color: var(--admin-card-border);
+  background: var(--admin-glass-background);
+  box-shadow: var(--admin-glass-shadow);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: none;
+  transform-style: flat;
+  animation: admin-card-enter .5s ease both;
+  transition: box-shadow .4s ease, border-color .4s ease;
 }
-
-.admin-dash-caddy .panel-lux {
-  transform-style: preserve-3d;
-  border-radius: 1.4rem;
-  border-color: oklch(from var(--color-lux) l c h / .22);
-  background:
-    linear-gradient(155deg, oklch(from var(--color-cream) l c h / .07), transparent 38%),
-    linear-gradient(160deg, oklch(0.284 0.027 52 / .9), oklch(0.196 0.02 46 / .93));
-  backdrop-filter: blur(16px) saturate(1.15);
-  -webkit-backdrop-filter: blur(16px) saturate(1.15);
-  box-shadow:
-    inset 0 1px 0 oklch(1 0 0 / .1),
-    inset 0 -20px 44px -34px oklch(from var(--color-lux) l c h / .5),
-    0 24px 48px -26px oklch(0.09 0.02 45 / .9),
-    0 5px 0 -1px oklch(0.14 0.017 44 / .85);
-  transition:
-    transform .5s cubic-bezier(.34, 1.3, .64, 1),
-    box-shadow .5s ease,
-    border-color .5s ease;
-}
-
-/* Floating glass circles, top-right corner (Uiverse logo cluster) */
-.admin-dash-caddy .panel-lux::before {
+.admin-caddy-shell :is(.panel-lux, .admin-dishes__card, .admin-dishes__metric)::before {
   content: "";
   position: absolute;
-  top: -34px;
-  right: -34px;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(112deg, transparent 42%, oklch(from var(--color-cream) l c h / .06) 50%, transparent 58%);
+  opacity: .5;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 68% 32%, oklch(1 0 0 / .16) 0 14%, transparent 15%),
-    radial-gradient(circle at 60% 40%, oklch(from var(--color-lux) l c h / .2) 0 26%, transparent 27%),
-    radial-gradient(circle at 50% 50%, oklch(1 0 0 / .07) 0 40%, transparent 41%),
-    radial-gradient(circle at 50% 50%, oklch(from var(--color-lux) l c h / .1) 0 55%, transparent 56%);
-  filter: blur(.4px);
-  opacity: .8;
-  transition: opacity .5s ease, transform .5s cubic-bezier(.34, 1.3, .64, 1);
-  animation: caddy-orb-drift 9s ease-in-out infinite;
 }
-
-/* Moving gold edge light travelling around the card border */
-.admin-dash-caddy .panel-lux::after {
+.admin-caddy-shell :is(.panel-lux, .admin-dishes__card, .admin-dishes__metric)::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: conic-gradient(
-    from var(--caddy-angle),
-    transparent 0%,
-    oklch(from var(--color-lux) l c h / .05) 6%,
-    oklch(0.96 0.09 95 / .85) 12%,
-    oklch(from var(--color-lux) l c h / .05) 18%,
-    transparent 26%
-  );
+  background: conic-gradient(from var(--caddy-angle), transparent 0%, oklch(from var(--color-lux) l c h / .05) 6%, var(--admin-edge-light) 12%, oklch(from var(--color-lux) l c h / .05) 18%, transparent 26%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -4059,36 +3994,39 @@ img[loading="lazy"]:not([style]) {
   pointer-events: none;
   animation: caddy-edge-spin 7s linear infinite;
 }
-
 @media (hover: hover) {
-  .admin-dash-caddy .panel-lux:hover {
-    transform: perspective(1000px) rotate3d(1, -1, 0, 7deg) translateY(-5px);
+  .admin-caddy-shell :is(.panel-lux, .admin-dishes__card, .admin-dishes__metric):hover {
+    transform: none;
     border-color: oklch(from var(--color-lux) l c h / .5);
-    box-shadow:
-      inset 0 1px 0 oklch(1 0 0 / .16),
-      inset 0 -22px 48px -32px oklch(from var(--color-lux) l c h / .7),
-      0 44px 76px -30px oklch(0.09 0.02 45 / .95),
-      0 9px 0 -1px oklch(0.14 0.017 44 / .9);
-  }
-  .admin-dash-caddy .panel-lux:hover::before {
-    opacity: 1;
-    transform: translate3d(-8px, 8px, 0) scale(1.12);
+    box-shadow: var(--admin-glass-hover-shadow);
   }
 }
-
-/* Stat cards get a slightly stronger glass tint so numbers pop */
-.admin-dash-caddy .card-3d {
-  background-color: oklch(0.24 0.024 50 / .55);
+@media (max-width: 639px) {
+  .admin-caddy-shell .panel-lux > div:not([class*="p-0"]):not([class*="p-2"]) { padding: 12px; }
+  .admin-caddy-shell .admin-field { min-width: 0; }
+  .admin-caddy-shell .admin-field > span:first-child { letter-spacing: 0; }
+  .admin-caddy-shell .field-lux:not(textarea) { min-width: 0; min-height: 38px; padding: 8px 10px; font-size: 12px; border-radius: 8px; }
+  .admin-caddy-shell .lux-search { min-height: 38px; padding: 8px 10px; }
+  .admin-caddy-shell .admin-segmented-tabs { flex-wrap: nowrap; overflow-x: auto; border-radius: 8px; }
+  .admin-caddy-shell .admin-segmented-tabs > button { flex-shrink: 0; letter-spacing: 0; }
+  .admin-orders > header { gap: 8px; }
+  .admin-orders__quick { gap: 6px; }
+  .admin-orders__quick button { min-height: 36px; padding: 6px 10px; font-size: 10px; letter-spacing: 0; }
+  .admin-orders__row { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; padding: 12px; }
+  .admin-orders__row > div { min-width: 0; }
+  .admin-orders__row p, .admin-orders__row a, .admin-orders__row span { letter-spacing: 0; }
+  .admin-orders__identity > div { flex-wrap: wrap; gap: 4px; }
+  .admin-orders__identity > p { padding-top: 0; }
+  .admin-orders__basket > p:nth-child(2) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .admin-orders__basket > div { flex-wrap: wrap; gap: 4px; padding-top: 0; }
+  .admin-orders__status > .status-chip { display: none; }
+  .admin-orders__actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; padding-top: 0; }
+  .admin-orders__actions :is(button,a) { min-height: 36px; padding: 6px 10px; font-size: 10px; letter-spacing: 0; }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  .admin-dash-caddy .panel-lux,
-  .admin-dash-caddy .panel-lux::before,
-  .admin-dash-caddy .panel-lux::after {
-    animation: none !important;
-    transition: none !important;
-  }
-  .admin-dash-caddy .panel-lux:hover { transform: none; }
+  .admin-caddy-shell :is(.panel-lux, .admin-dishes__card, .admin-dishes__metric),
+  .admin-caddy-shell :is(.panel-lux, .admin-dishes__card, .admin-dishes__metric)::before,
+  .admin-caddy-shell :is(.panel-lux, .admin-dishes__card, .admin-dishes__metric)::after { animation: none !important; transition: none !important; }
 }
 
 /* Inverted-corner notch used where controls are cut out of a card's top edge. */

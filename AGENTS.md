@@ -12,3 +12,4 @@
 - Filter add-to-cart particles and their button-shaped liquid source together before masking the button interior; this allows merging without covering its label.
 - Keep shared platform fade animations opacity-only so they neither override fixed-dialog centering nor create containing blocks around nested dialogs.
 - Keep admin mobile navigation groups in the shared console shell and filter them against the supplied role navigation, so every allowed page stays reachable without exposing disallowed links.
+- Keep admin glass surfaces and animated edges in the shared stylesheet across breakpoints; use opacity-only entry effects and no transformed card ancestors so nested fixed dialogs remain viewport-centered.

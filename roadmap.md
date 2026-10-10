@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Unify admin card effects across desktop/mobile and compact mobile filters and order rows. Verified at 320, 390 and 1280px with isolated sample responses, working filter selection and reduced motion; live owner login remains unverified.
+
 - [x] Remove bulky admin strips and build grouped, mobile-friendly bottom navigation while preserving the desktop sidebar. Verified at 320, 390 and 768px with an isolated UI fixture; live owner access is unavailable.
 
 - [x] Clone moon-grill-hub, set env vars (API base, tenant slug, demo off, lock code).
