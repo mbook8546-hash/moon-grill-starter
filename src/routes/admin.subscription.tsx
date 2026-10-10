@@ -182,7 +182,7 @@ function PayDialog({ inv, onClose, onDone }: { inv: SaasInvoice; onClose: () => 
   const [busy, setBusy] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
   const submit = async () => {
-    if (!tid.trim() || !file) return toast.error("Add the transaction ID and a screenshot");
+    if (!tid.trim() || !file) { toast.error("Add the transaction ID and a screenshot"); return; }
     setBusy(true);
     const fd = new FormData();
     fd.append("transaction_id", tid.trim());
