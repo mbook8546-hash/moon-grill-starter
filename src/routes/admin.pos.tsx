@@ -35,6 +35,7 @@ export const Route = createFileRoute("/admin/pos")({
 
 const POS_API = {
   shiftOpen: "/admin/pos/shifts/",
+  shiftCurrent: "/admin/pos/shifts/current/",
   shiftClose: (id: string) => `/admin/pos/shifts/${id}/close/`,
   cashMove: (id: string) => `/admin/pos/shifts/${id}/cash-moves/`,
   tables: "/admin/pos/tables/",
@@ -108,7 +109,17 @@ export function CounterPOSPage() {
   // ── boot ──
   useEffect(() => {
     setHeld(load(POS_KEYS.held, [])); setSales(load(POS_KEYS.sales, []));
-    setShift(load(POS_KEYS.shift, null)); setPrefs({ ...DEFAULT_PREFS, ...load(POS_KEYS.prefs, {}) });
+    setShift(load(POS_KEYS.shift, null));
+    // Server is the source of truth for the open shift (survives other devices / cleared browsers).
+    api.get<Record<string, unknown> | null>(POS_API.shiftCurrent).then((r) => {
+      if (!r || !r.id) { setShift(null); return; }
+      setShift({
+        id: String(r.id), openedAt: String(r.opened_at ?? new Date().toISOString()), openedBy: String(r.opened_by ?? ""),
+        openingFloat: Number(r.opening_float ?? 0),
+        moves: ((r.cash_moves as Record<string, unknown>[] | undefined) ?? []).map((m) => ({ id: String(m.id), kind: m.kind === "out" ? "out" : "in", amount: Number(m.amount ?? 0), reason: String(m.reason ?? ""), at: String(m.at ?? "") })) as Shift["moves"],
+      });
+    }).catch(() => {});
+    setPrefs({ ...DEFAULT_PREFS, ...load(POS_KEYS.prefs, {}) });
     api.get<Dish[]>(MENU.dishes).then((d) => Array.isArray(d) && d.length && setDishes(d)).catch(() => {});
     api.get<Record<string, unknown>>(ADMIN_EXTRA.settings).then((s) => {
       setPrefs((p) => ({ ...p, taxPercent: Number(s?.tax_percent ?? p.taxPercent), servicePercent: Number(s?.service_charge_percent ?? p.servicePercent), deliveryFee: Number(s?.delivery_fee ?? p.deliveryFee) }));
