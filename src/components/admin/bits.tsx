@@ -223,7 +223,6 @@ export function StatCard({
         "panel-lux lux-rise card-3d relative overflow-hidden p-4 sm:p-5",
         t.ring,
       )}
-      style={{ backgroundImage: `radial-gradient(420px 140px at 100% 0%, ${t.glow}, transparent 70%)` }}
     >
       <div className="flex items-start justify-between gap-2">
         <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-dim sm:tracking-[0.22em]">{label}</p>

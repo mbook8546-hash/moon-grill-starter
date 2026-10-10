@@ -3964,6 +3964,8 @@ img[loading="lazy"]:not([style]) {
   border-color: var(--admin-card-border);
   background: var(--admin-glass-background);
   box-shadow: var(--admin-glass-shadow);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   transform: none;
   transform-style: flat;
   animation: admin-card-enter .5s ease both;
