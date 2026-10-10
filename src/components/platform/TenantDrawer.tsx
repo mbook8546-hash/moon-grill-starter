@@ -4,6 +4,7 @@ import { ExternalLink, KeyRound, Loader2, LogIn, MessageCircle, PauseCircle, Pla
 
 import { api } from "@/lib/api/client";
 import { PLATFORM } from "@/lib/api/endpoints";
+import { startImpersonation } from "@/lib/subscription";
 import { setTenantSlug } from "@/lib/tenant";
 import type { PlatformTenant, SubStatus } from "@/lib/platform/types";
 import { usePlatform } from "./store";
@@ -33,7 +34,13 @@ export function TenantDrawer({ slug, onClose }: { slug: string; onClose: () => v
   const patch = (changes: Partial<PlatformTenant>) => set("tenants", (p) => p.map((x) => (x.slug === slug ? { ...x, ...changes } : x)));
 
   const openAs = async () => {
-    try { await api.post(PLATFORM.tenantImpersonate(slug), {}); } catch { /* endpoint optional */ }
+    await mutate({
+      label: `Opened ${t.name} admin`,
+      call: () => api.post(PLATFORM.tenantImpersonate(slug), {}),
+      local: () => {},
+      audit: { action: "Opened restaurant admin (viewing as)", target: t.name, category: "tenant" },
+    });
+    startImpersonation(t.name, slug);
     setTenantSlug(slug);
     void navigate({ to: "/admin" });
   };
