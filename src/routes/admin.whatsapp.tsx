@@ -34,6 +34,14 @@ import { currentTenantSlug } from "@/lib/tenant";
 
 export const Route = createFileRoute("/admin/whatsapp")({
   ssr: false,
+  head: () => ({ meta: [
+    {"title": "WhatsApp Gateway \u2014 Kennedy Moon Grill"},
+    {"name": "description", "content": "Connect the restaurant WhatsApp account and review its status."},
+    {"property": "og:title", "content": "WhatsApp Gateway \u2014 Kennedy Moon Grill"},
+    {"property": "og:description", "content": "Connect the restaurant WhatsApp account and review its status."},
+    {"property": "og:type", "content": "website"},
+    {"name": "twitter:card", "content": "summary_large_image"},
+  ] }),
   component: AdminWhatsAppPage,
 });
 

@@ -55,6 +55,14 @@ import { redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/riders")({
   ssr: false,
+  head: () => ({ meta: [
+    {"title": "Rider Management \u2014 Kennedy Moon Grill"},
+    {"name": "description", "content": "Manage restaurant delivery riders and dispatch assignments."},
+    {"property": "og:title", "content": "Rider Management \u2014 Kennedy Moon Grill"},
+    {"property": "og:description", "content": "Manage restaurant delivery riders and dispatch assignments."},
+    {"property": "og:type", "content": "website"},
+    {"name": "twitter:card", "content": "summary_large_image"},
+  ] }),
   component: Riders,
 });
 

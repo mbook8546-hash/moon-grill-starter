@@ -106,8 +106,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Kennedy — Spicy Pizza Specialist | Moon Grill Narowal" },
       { name: "twitter:description", content: "Kennedy serves the spiciest pizza in Narowal plus authentic malai boti, seekh kebab and charcoal grills. Order fiery flavors crafted fresh." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d0045294ef88464b8f5807b5c1c21bca/id-preview-13d2f864--1b9194b0-74d5-47aa-a00d-4e5bd7ee5be0.lovable.app-1786259134967.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d0045294ef88464b8f5807b5c1c21bca/id-preview-13d2f864--1b9194b0-74d5-47aa-a00d-4e5bd7ee5be0.lovable.app-1786259134967.png" },
     ],
     links: [
       {

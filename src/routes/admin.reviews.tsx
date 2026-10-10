@@ -12,6 +12,9 @@ export const Route = createFileRoute("/admin/reviews")({
   ssr: false,
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+
       { title: "Customer Reviews — Owner Console" },
       { name: "description", content: "Read and reply to customer ratings for food and delivery." },
       { property: "og:title", content: "Customer Reviews — Owner Console" },

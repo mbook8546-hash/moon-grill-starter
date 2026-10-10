@@ -23,6 +23,14 @@ import { currentTenantSlug } from "@/lib/tenant";
 
 export const Route = createFileRoute("/admin/staff")({
   ssr: false,
+  head: () => ({ meta: [
+    {"title": "Staff Management \u2014 Kennedy Moon Grill"},
+    {"name": "description", "content": "Manage restaurant staff access and roles."},
+    {"property": "og:title", "content": "Staff Management \u2014 Kennedy Moon Grill"},
+    {"property": "og:description", "content": "Manage restaurant staff access and roles."},
+    {"property": "og:type", "content": "website"},
+    {"name": "twitter:card", "content": "summary_large_image"},
+  ] }),
   component: AdminStaffPage,
 });
 

@@ -11,6 +11,9 @@ export const Route = createFileRoute("/admin/activity")({
   ssr: false,
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+
       { title: "Activity Log — Owner Console" },
       { name: "description", content: "Who changed what in your restaurant: orders, payments, prices and staff." },
       { property: "og:title", content: "Activity Log — Owner Console" },

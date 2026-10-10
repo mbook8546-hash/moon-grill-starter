@@ -10,6 +10,9 @@ export const Route = createFileRoute("/admin/reports")({
   ssr: false,
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+
       { title: "Sales Reports — Owner Console" },
       { name: "description", content: "Sales by day, best-selling dishes, busy hours and payment mix, with CSV export." },
       { property: "og:title", content: "Sales Reports — Owner Console" },

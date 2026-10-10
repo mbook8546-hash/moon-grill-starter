@@ -35,7 +35,7 @@ import { ADMIN_ROLES } from "@/lib/roles";
 import { readTenant, currentTenantSlug } from "@/lib/tenant";
 import { api, tokens } from "@/lib/api/client";
 import { fetchWhatsAppStatus } from "@/lib/whatsapp";
-import { AnnouncementStrip, ImpersonationBar, PlanBar, SaasGate } from "@/components/admin/SaasChrome";
+import { ImpersonationBar, SaasGate } from "@/components/admin/SaasChrome";
 import { PATH_FEATURE, useEntitlement } from "@/lib/subscription";
 
 export const Route = createFileRoute("/admin")({
@@ -45,6 +45,9 @@ export const Route = createFileRoute("/admin")({
   beforeLoad: requireRole(ADMIN_ROLES),
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+
       { title: "Owner Console — Kennedy Moon Grill" },
       {
         name: "description",
@@ -112,7 +115,6 @@ function AdminLayout() {
     const hit = PATH_FEATURE.find(([p]) => n.to.startsWith(p));
     return { ...n, locked: Boolean(ent && hit && ent.features[hit[1]] === false) };
   });
-  const showPlan = isOwner || isAdmin || isManager;
 
   const consoleTitle = isKitchen
     ? "Kitchen KDS"
@@ -316,8 +318,6 @@ function AdminLayout() {
       }
     >
       <ImpersonationBar />
-      {showPlan ? <AnnouncementStrip /> : null}
-      {showPlan ? <PlanBar /> : null}
       <SaasGate>
         <Outlet />
       </SaasGate>

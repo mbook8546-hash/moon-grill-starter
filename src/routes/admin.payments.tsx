@@ -43,6 +43,14 @@ import { redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/payments")({
   ssr: false,
+  head: () => ({ meta: [
+    {"title": "Payment Verification \u2014 Kennedy Moon Grill"},
+    {"name": "description", "content": "Review customer receipts and verify restaurant payments."},
+    {"property": "og:title", "content": "Payment Verification \u2014 Kennedy Moon Grill"},
+    {"property": "og:description", "content": "Review customer receipts and verify restaurant payments."},
+    {"property": "og:type", "content": "website"},
+    {"name": "twitter:card", "content": "summary_large_image"},
+  ] }),
   component: Payments,
 });
 

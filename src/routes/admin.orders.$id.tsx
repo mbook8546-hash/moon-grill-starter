@@ -51,6 +51,14 @@ import { readAccount } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin/orders/$id")({
   ssr: false,
+  head: () => ({ meta: [
+    {"title": "Order Details \u2014 Kennedy Moon Grill"},
+    {"name": "description", "content": "Review restaurant order items, payments and delivery status."},
+    {"property": "og:title", "content": "Order Details \u2014 Kennedy Moon Grill"},
+    {"property": "og:description", "content": "Review restaurant order items, payments and delivery status."},
+    {"property": "og:type", "content": "website"},
+    {"name": "twitter:card", "content": "summary_large_image"},
+  ] }),
   component: OrderDetail,
 });
 

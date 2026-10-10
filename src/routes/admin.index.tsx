@@ -58,6 +58,14 @@ import { fetchWhatsAppStatus } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/admin/")({
   ssr: false,
+  head: () => ({ meta: [
+    { title: "Restaurant Dashboard — Kennedy Moon Grill" },
+    { name: "description", content: "Restaurant orders, verified revenue, payments and delivery operations." },
+    { property: "og:title", content: "Restaurant Dashboard — Kennedy Moon Grill" },
+    { property: "og:description", content: "Restaurant orders, verified revenue, payments and delivery operations." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ] }),
   component: Dashboard,
 });
 
