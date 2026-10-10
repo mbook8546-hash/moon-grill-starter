@@ -185,8 +185,8 @@
 /* Split doors — left/right image panels that slide apart on unlock (from the design) */
 .pf-lock-doors { position: absolute; inset: 0; display: flex; background: oklch(0.12 0.02 280); }
 .pf-lock-door { width: 50%; height: 100%; flex-shrink: 0; background-size: cover; background-repeat: no-repeat; transition: transform 1.05s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }
-.pf-lock-door.left { background: 100% 50% / cover no-repeat url("/__l5e/assets-v1/31a7f17d-b9f8-4a12-8e9d-c158344efed2/wanted-board-left.png"); }
-.pf-lock-door.right { background: 0% 50% / cover no-repeat url("/__l5e/assets-v1/01cad200-252c-4f6a-b82f-2f78871a0dfd/wanted-board-right.webp"); }
+.pf-lock-door.left { background: 100% 50% / cover no-repeat url("/__l5e/assets-v1/471667e8-fd2d-46ad-9072-4f62300ff868/wanted-board-left.webp"); }
+.pf-lock-door.right { background: 0% 50% / cover no-repeat url("/__l5e/assets-v1/22c961e4-be2c-4e02-a7c6-00f113632db5/wanted-board-right.webp"); }
 .pf-lock-doors::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, oklch(0 0 0 / .55), oklch(0 0 0 / .15) 40%, oklch(0 0 0 / .25)); }
 .pf-lock.opening .pf-lock-door.left { transform: translateX(-105%); }
 .pf-lock.opening .pf-lock-door.right { transform: translateX(105%); }
