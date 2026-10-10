@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ClipboardList, Eye, Plus, Star, Trash2, X } from "lucide-react";
+import { ClipboardList, Eye, Plus, SlidersHorizontal, Star, Trash2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -12,6 +12,7 @@ import {
   DangerButton,
   Field,
   GhostButton,
+  GoldButton,
   LuxSearch,
   Money,
   Panel,
@@ -76,6 +77,7 @@ function OrdersDesk() {
   const [rider, setRider] = useState<string>("all");
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [ratingOrder, setRatingOrder] = useState<any | null>(null);
 
   const rows = useMemo(() => {
@@ -137,9 +139,9 @@ function OrdersDesk() {
   ];
 
   return (
-    <div className="space-y-5">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
+    <div className="admin-orders space-y-3 sm:space-y-5">
+      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4 sm:flex sm:flex-wrap sm:justify-between">
+        <div className="min-w-0">
           <p className="text-[11px] font-black uppercase tracking-[0.3em] text-lux/70">
             Order desk
           </p>
@@ -148,17 +150,16 @@ function OrdersDesk() {
             {rows.length} order{rows.length === 1 ? "" : "s"} shown · {money(totalValue)} in value
           </p>
         </div>
-        <button
-          type="button"
+        <GoldButton
           onClick={() => setCreateModalOpen(true)}
-          className="inline-flex items-center gap-2 rounded-full border border-lux/40 bg-gradient-to-r from-flame to-[#D94824] px-5 py-2.5 text-xs font-black uppercase tracking-[0.16em] text-cream shadow-[0_4px_20px_rgba(184,42,20,0.4)] transition hover:brightness-110 active:scale-95"
+          className="shrink-0 px-3 text-xs tracking-normal"
         >
-          <Plus className="h-4 w-4" /> New Order (POS / Desk)
-        </button>
+          <Plus className="h-4 w-4" /> <span className="sm:hidden">New order</span><span className="hidden sm:inline">New Order (POS / Desk)</span>
+        </GoldButton>
       </header>
 
       {/* Quick filters: one tap for the three shifts staff care about */}
-      <div className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
+      <div className="admin-orders__quick -mx-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
         {quickFilters.map((q) => (
           <button
             key={q.key}
@@ -187,7 +188,7 @@ function OrdersDesk() {
       </div>
 
       <Panel bodyClassName="p-4">
-        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-2 sm:grid-cols-2 md:grid-cols-4 sm:gap-3">
           <Field label="Search" className="sm:col-span-2 md:col-span-1">
             <LuxSearch
               value={search}
@@ -196,6 +197,12 @@ function OrdersDesk() {
               ariaLabel="Search orders"
             />
           </Field>
+          <div className="sm:hidden">
+            <GhostButton onClick={() => setFiltersOpen(!filtersOpen)} className="h-[38px] px-3 tracking-normal">
+              <SlidersHorizontal className="h-4 w-4" /> {filtersOpen ? "Less" : "Filters"}{[status, pay, rider].filter((v) => v !== "all").length > 0 ? ` (${[status, pay, rider].filter((v) => v !== "all").length})` : ""}
+            </GhostButton>
+          </div>
+          <div className={`${filtersOpen ? "grid" : "hidden"} col-span-2 grid-cols-2 gap-2 sm:contents`}>
           <Field label="Status">
             <select
               value={status}
@@ -233,6 +240,7 @@ function OrdersDesk() {
               ))}
             </select>
           </Field>
+          </div>
         </div>
       </Panel>
 
@@ -240,9 +248,9 @@ function OrdersDesk() {
       <div className="space-y-3">
         {rows.map((o) => (
           <Panel key={o.id} bodyClassName="p-0">
-            <div className="grid gap-4 p-4 lg:grid-cols-[1.15fr_1fr_1.1fr_1.05fr] lg:items-start">
+            <div className="admin-orders__row grid gap-4 p-4 lg:grid-cols-[1.15fr_1fr_1.1fr_1.05fr] lg:items-start">
               {/* identity */}
-              <div className="space-y-1.5">
+              <div className="admin-orders__identity space-y-1.5">
                 <div className="flex items-center gap-2">
                   <Link
                     to="/admin/orders/$id"
@@ -263,7 +271,7 @@ function OrdersDesk() {
               </div>
 
               {/* basket */}
-              <div className="space-y-1.5">
+              <div className="admin-orders__basket space-y-1.5">
                 <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-dim">
                   Basket · {o.items.reduce((s, it) => s + it.qty, 0)} items
                 </p>
@@ -283,7 +291,7 @@ function OrdersDesk() {
               </div>
 
               {/* controls */}
-              <div className="space-y-2">
+              <div className="admin-orders__status space-y-2">
                 <Field label="Status">
                   <select
                     value={o.status}
@@ -309,7 +317,8 @@ function OrdersDesk() {
               </div>
 
               {/* rider + actions */}
-              <div className="space-y-2">
+              <div className="space-y-2 contents lg:block">
+                <div className="space-y-2 min-w-0">
                 <Field label="Rider">
                   <select
                     value={o.riderId ?? ""}
@@ -341,7 +350,8 @@ function OrdersDesk() {
                 ) : o.riderId ? (
                   <p className="text-[11px] text-lux">Awaiting acceptance</p>
                 ) : null}
-                <div className="flex flex-wrap items-center gap-2 pt-1">
+                </div>
+                <div className="admin-orders__actions flex flex-wrap items-center gap-2 pt-1">
                   <Link
                     to="/admin/orders/$id"
                     params={{ id: o.id }}
