@@ -270,16 +270,16 @@ export function CounterPOSPage() {
     <>
       <PrintArea receipt={receipt} mode={printMode} />
 
-      <div className="print:hidden h-[calc(100vh-4rem)] flex flex-col bg-background">
+      <div className="admin-pos-workspace print:hidden min-h-[calc(100dvh-9rem)] md:h-[calc(100dvh-9rem)] lg:h-[calc(100dvh-4rem)] flex flex-col bg-background">
         {/* toolbar */}
-        <div className="flex flex-wrap items-center gap-2 px-3 py-2 border-b border-border bg-card/70">
+        <div className="flex shrink-0 items-center gap-2 overflow-x-auto whitespace-nowrap px-3 py-2 border-b border-border bg-card/70 md:flex-wrap [&>*]:shrink-0">
           <Store className="w-4 h-4 text-primary" />
           <span className="font-bold text-sm">Counter POS</span>
           <button onClick={() => setPanel("shift")} className={`pos-chip ${shift ? "text-primary" : "text-destructive"}`}>
             {shift ? <><Clock className="w-3.5 h-3.5" /> Shift open · {new Date(shift.openedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</> : <><Lock className="w-3.5 h-3.5" /> Shift closed</>}
           </button>
           <span className="text-xs text-muted-foreground">Cashier <b className="text-foreground">{cashier}</b></span>
-          <div className="ml-auto flex flex-wrap gap-1.5">
+          <div className="ml-auto flex gap-1.5 md:flex-wrap">
             {pendingSync > 0 && <button onClick={retrySync} className="pos-chip text-destructive"><CloudOff className="w-3.5 h-3.5" /> {pendingSync} unsent · retry</button>}
             <button onClick={() => setPanel("held")} className="pos-chip"><Pause className="w-3.5 h-3.5" /> Held ({held.length})</button>
             <button onClick={() => setPanel("sales")} className="pos-chip"><History className="w-3.5 h-3.5" /> Today ({sales.filter((s) => s.at.slice(0, 10) === new Date().toISOString().slice(0, 10)).length})</button>
@@ -287,9 +287,9 @@ export function CounterPOSPage() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        <div className="min-h-0 flex-1 flex flex-col md:flex-row md:overflow-hidden">
           {/* menu */}
-          <div className="flex-1 flex flex-col overflow-hidden border-r border-border">
+          <div className="min-w-0 flex-1 flex flex-col md:overflow-hidden md:border-r border-border">
             <div className="p-3 space-y-2 border-b border-border/60">
               <div className="flex gap-2">
                 <div className="relative flex-1">
