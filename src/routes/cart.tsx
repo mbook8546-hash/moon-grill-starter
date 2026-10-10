@@ -44,6 +44,7 @@ import { ApiError } from "@/lib/api/client";
 import type { OrderBill } from "@/lib/account";
 import { OrderReceiptDialog, SoldOutDialog } from "@/components/kennedy/OrderOutcomeDialogs";
 import { LuxuryOtpWidget } from "@/components/kennedy/LuxuryOtpWidget";
+import { ShopStatusBanner } from "@/components/kennedy/ShopStatusBanner";
 import {
   formatPkPhoneInput,
   normalizePkPhone,
@@ -395,6 +396,7 @@ function CartPage() {
   return (
     <main className="checkout-stage min-h-screen bg-cream pb-20">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-8">
+        <ShopStatusBanner />
         <Link
           to="/"
           className="inline-flex items-center gap-1.5 font-display text-xs font-extrabold uppercase tracking-[0.18em] text-charcoal/70 hover:text-flame"

@@ -116,7 +116,7 @@ export function CounterPOSPage() {
       setShift({
         id: String(r.id), openedAt: String(r.opened_at ?? new Date().toISOString()), openedBy: String(r.opened_by ?? ""),
         openingFloat: Number(r.opening_float ?? 0),
-        moves: ((r.cash_moves as Record<string, unknown>[] | undefined) ?? []).map((m) => ({ id: String(m.id), kind: m.kind === "out" ? "out" : "in", amount: Number(m.amount ?? 0), reason: String(m.reason ?? ""), at: String(m.at ?? "") })) as Shift["moves"],
+        moves: ((r.cash_moves as Record<string, unknown>[] | undefined) ?? []).map((m) => ({ kind: m.kind === "out" ? "out" : "in", amount: Number(m.amount ?? 0), reason: String(m.reason ?? ""), at: String(m.at ?? "") })) as Shift["moves"],
       });
     }).catch(() => {});
     setPrefs({ ...DEFAULT_PREFS, ...load(POS_KEYS.prefs, {}) });
