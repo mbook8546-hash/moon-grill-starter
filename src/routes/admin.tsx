@@ -45,6 +45,9 @@ export const Route = createFileRoute("/admin")({
   beforeLoad: requireRole(ADMIN_ROLES),
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+
       { title: "Owner Console — Kennedy Moon Grill" },
       {
         name: "description",

@@ -26,6 +26,11 @@ export const Route = createFileRoute("/admin/pos")({
   beforeLoad: requireRole(ADMIN_ROLES),
   head: () => ({
     meta: [
+      { property: "og:title", content: "Counter POS — Kennedy Moon Grill" },
+      { property: "og:description", content: "Fast counter till for takeaway, dine-in and delivery orders." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+
       { title: "Counter POS — Kennedy Moon Grill" },
       { name: "description", content: "Fast counter till for takeaway, dine-in and delivery orders." },
     ],

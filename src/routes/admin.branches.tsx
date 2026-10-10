@@ -19,6 +19,14 @@ import { Panel } from "@/components/admin/bits";
 
 export const Route = createFileRoute("/admin/branches")({
   ssr: false,
+  head: () => ({ meta: [
+    {"title": "Branches \u2014 Kennedy Moon Grill"},
+    {"name": "description", "content": "Manage restaurant branches, locations and opening hours."},
+    {"property": "og:title", "content": "Branches \u2014 Kennedy Moon Grill"},
+    {"property": "og:description", "content": "Manage restaurant branches, locations and opening hours."},
+    {"property": "og:type", "content": "website"},
+    {"name": "twitter:card", "content": "summary_large_image"},
+  ] }),
   component: AdminBranchesPage,
 });
 

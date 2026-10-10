@@ -23,6 +23,14 @@ import { Panel } from "@/components/admin/bits";
 
 export const Route = createFileRoute("/admin/billing")({
   ssr: false,
+  head: () => ({ meta: [
+    {"title": "Billing & Z Report \u2014 Kennedy Moon Grill"},
+    {"name": "description", "content": "Restaurant billing, till reconciliation and end-of-shift reports."},
+    {"property": "og:title", "content": "Billing & Z Report \u2014 Kennedy Moon Grill"},
+    {"property": "og:description", "content": "Restaurant billing, till reconciliation and end-of-shift reports."},
+    {"property": "og:type", "content": "website"},
+    {"name": "twitter:card", "content": "summary_large_image"},
+  ] }),
   component: AdminBillingPage,
 });
 

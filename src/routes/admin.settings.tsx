@@ -11,6 +11,9 @@ export const Route = createFileRoute("/admin/settings")({
   ssr: false,
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+
       { title: "Restaurant Settings — Owner Console" },
       { name: "description", content: "Opening hours, wallet numbers, taxes and delivery rules for your restaurant." },
       { property: "og:title", content: "Restaurant Settings — Owner Console" },

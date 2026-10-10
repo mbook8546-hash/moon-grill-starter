@@ -11,6 +11,9 @@ export const Route = createFileRoute("/admin/coupons")({
   ssr: false,
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+
       { title: "Coupons & Offers — Owner Console" },
       { name: "description", content: "Create discount codes, free-delivery offers and usage limits." },
       { property: "og:title", content: "Coupons & Offers — Owner Console" },

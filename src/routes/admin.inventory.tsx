@@ -23,6 +23,14 @@ import { Field, LuxSearch, Panel, fieldClass } from "@/components/admin/bits";
 
 export const Route = createFileRoute("/admin/inventory")({
   ssr: false,
+  head: () => ({ meta: [
+    {"title": "Inventory \u2014 Kennedy Moon Grill"},
+    {"name": "description", "content": "Restaurant stock levels, ingredients and inventory movements."},
+    {"property": "og:title", "content": "Inventory \u2014 Kennedy Moon Grill"},
+    {"property": "og:description", "content": "Restaurant stock levels, ingredients and inventory movements."},
+    {"property": "og:type", "content": "website"},
+    {"name": "twitter:card", "content": "summary_large_image"},
+  ] }),
   component: InventoryManagementPage,
 });
 

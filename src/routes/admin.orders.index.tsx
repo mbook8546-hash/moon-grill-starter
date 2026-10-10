@@ -42,6 +42,14 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/admin/orders/")({
   ssr: false,
+  head: () => ({ meta: [
+    {"title": "Orders Desk \u2014 Kennedy Moon Grill"},
+    {"name": "description", "content": "Manage live restaurant orders, fulfilment and delivery."},
+    {"property": "og:title", "content": "Orders Desk \u2014 Kennedy Moon Grill"},
+    {"property": "og:description", "content": "Manage live restaurant orders, fulfilment and delivery."},
+    {"property": "og:type", "content": "website"},
+    {"name": "twitter:card", "content": "summary_large_image"},
+  ] }),
   validateSearch: (search: Record<string, unknown>) => searchSchema.parse(search),
   component: OrdersDesk,
 });
