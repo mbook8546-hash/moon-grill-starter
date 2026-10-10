@@ -22,6 +22,8 @@ import {
   Star,
   LineChart,
   ScrollText,
+  LifeBuoy,
+  Gem,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -33,6 +35,8 @@ import { ADMIN_ROLES } from "@/lib/roles";
 import { readTenant, currentTenantSlug } from "@/lib/tenant";
 import { api, tokens } from "@/lib/api/client";
 import { fetchWhatsAppStatus } from "@/lib/whatsapp";
+import { AnnouncementStrip, ImpersonationBar, PlanBar, SaasGate } from "@/components/admin/SaasChrome";
+import { PATH_FEATURE, useEntitlement } from "@/lib/subscription";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -76,6 +80,8 @@ const ADMIN_NAV = [
   { to: "/admin/reviews", label: "Reviews", icon: Star },
   { to: "/admin/activity", label: "Activity log", icon: ScrollText },
   { to: "/admin/settings", label: "Settings", icon: SettingsIcon },
+  { to: "/admin/subscription", label: "Plan & invoices", icon: Gem },
+  { to: "/admin/support", label: "Help & support", icon: LifeBuoy },
 ] as const;
 
 const CASHIER_NAV = [
@@ -100,7 +106,13 @@ function AdminLayout() {
   const isAdmin = role === "admin";
   const isManager = role === "manager";
   const isCashier = role === "cashier";
-  const nav = isKitchen ? KITCHEN_NAV : isCashier ? CASHIER_NAV : ADMIN_NAV;
+  const { ent } = useEntitlement();
+  const baseNav = isKitchen ? KITCHEN_NAV : isCashier ? CASHIER_NAV : ADMIN_NAV;
+  const nav = baseNav.map((n) => {
+    const hit = PATH_FEATURE.find(([p]) => n.to.startsWith(p));
+    return { ...n, locked: Boolean(ent && hit && ent.features[hit[1]] === false) };
+  });
+  const showPlan = isOwner || isAdmin || isManager;
 
   const consoleTitle = isKitchen
     ? "Kitchen KDS"
@@ -303,7 +315,12 @@ function AdminLayout() {
         </>
       }
     >
-      <Outlet />
+      <ImpersonationBar />
+      {showPlan ? <AnnouncementStrip /> : null}
+      {showPlan ? <PlanBar /> : null}
+      <SaasGate>
+        <Outlet />
+      </SaasGate>
     </ConsoleShell>
   );
 }

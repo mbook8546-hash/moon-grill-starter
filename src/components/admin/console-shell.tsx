@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Lock, Menu, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -10,6 +10,8 @@ export type ConsoleNavItem = {
   label: string;
   icon: LucideIcon;
   exact?: boolean;
+  /** Shows a small lock: the current plan doesn't include this page. */
+  locked?: boolean;
 };
 
 /**
@@ -62,7 +64,7 @@ export function ConsoleShell({
       {sidebar}
 
       <nav className="flex flex-col gap-1.5">
-        {nav.map(({ to, label, icon: Icon, exact }) => (
+        {nav.map(({ to, label, icon: Icon, exact, locked }) => (
           <Link
             key={to}
             to={to}
@@ -74,7 +76,8 @@ export function ConsoleShell({
             className="inline-flex items-center gap-2.5 rounded-xl border border-transparent px-3 py-2.5 text-[11px] font-black uppercase tracking-[0.14em] text-mist/80 transition hover:border-lux/20 hover:bg-lux/5 hover:text-frost"
           >
             <Icon className="h-4 w-4" />
-            {label}
+            <span className="flex-1">{label}</span>
+            {locked ? <Lock className="h-3 w-3 text-lux/70" aria-label="Upgrade to unlock" /> : null}
           </Link>
         ))}
       </nav>

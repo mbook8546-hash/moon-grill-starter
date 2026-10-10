@@ -25,7 +25,7 @@ export function ImpersonationBar() {
       </span>
       <button
         className="btn-ghost-lux"
-        onClick={() => { endImpersonation(); setTenantSlug(null); window.location.href = "/platform"; }}
+        onClick={async () => { await api.post("/platform/impersonation/end/", { slug: imp.slug }).catch(() => {}); endImpersonation(); setTenantSlug(null); window.location.href = "/platform"; }}
       >
         Exit to platform
       </button>
