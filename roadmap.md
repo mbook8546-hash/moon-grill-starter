@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Remove bulky admin strips and build grouped, mobile-friendly bottom navigation while preserving the desktop sidebar.
+
 - [x] Clone moon-grill-hub, set env vars (API base, tenant slug, demo off, lock code).
 - [x] Rebuild platform owner console in AdminHub style: lock screen, sidebar, dashboard, restaurants + detail drawer, plans, invoices, support, announcements, team, connections, activity log, settings.
 - [x] Write do_backend.md with every missing backend endpoint and payload.
