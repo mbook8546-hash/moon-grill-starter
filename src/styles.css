@@ -3868,6 +3868,7 @@ img[loading="lazy"]:not([style]) {
 .admin-mobile-orbit-active { background: oklch(from var(--color-lux) l c h / .18); border-color: var(--color-lux); }
 .admin-mobile-orbit .admin-mobile-lock { position: absolute; right: -2px; bottom: 0; width: 16px; height: 16px; padding: 2px; border-radius: 50%; background: var(--color-ink-deep); }
 .admin-mobile-option-label { min-height: 30px; font-size: 11px; line-height: 15px; text-align: center; overflow-wrap: anywhere; letter-spacing: 0; }
+.admin-pos-workspace { color: var(--foreground); }
 @media (max-width: 639px) {
   .admin-caddy-shell .console-main { overflow-wrap: anywhere; }
   .admin-caddy-shell .admin-section-title > div > .gold-bar { display: none; }
@@ -3880,6 +3881,12 @@ img[loading="lazy"]:not([style]) {
   .admin-caddy-shell .admin-dash-caddy > a.group > div:first-child { min-width: 0; gap: 8px; }
   .admin-caddy-shell .admin-dash-caddy > a.group > div:first-child > div:first-child { flex-shrink: 0; }
   .admin-caddy-shell .admin-dash-caddy > a.group > div:last-child { padding: 8px; font-size: 10px; flex-shrink: 0; }
+  .admin-caddy-shell .admin-dash-caddy .panel-lux { border-radius: 8px; transform: none; background: var(--color-panel); }
+  .admin-caddy-shell .admin-dash-caddy .panel-lux::before,
+  .admin-caddy-shell .admin-dash-caddy .panel-lux::after { display: none; }
+  .admin-caddy-shell .admin-dash-caddy .card-3d { padding: 12px; }
+  .admin-caddy-shell .admin-dash-caddy .card-3d .icon-3d { width: 26px; height: 26px; }
+  .admin-caddy-shell .admin-dash-caddy .card-3d p { letter-spacing: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .admin-mobile-options { animation: none !important; } }
 .admin-caddy-shell {

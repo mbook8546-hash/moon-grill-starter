@@ -270,7 +270,7 @@ export function CounterPOSPage() {
     <>
       <PrintArea receipt={receipt} mode={printMode} />
 
-      <div className="admin-pos-workspace print:hidden min-h-[calc(100dvh-9rem)] md:h-[calc(100dvh-9rem)] lg:h-[calc(100dvh-4rem)] flex flex-col bg-background">
+      <div className="admin-pos-workspace print:hidden text-foreground md:h-[calc(100dvh-9rem)] lg:h-[calc(100dvh-4rem)] flex flex-col bg-background">
         {/* toolbar */}
         <div className="flex shrink-0 items-center gap-2 overflow-x-auto whitespace-nowrap px-3 py-2 border-b border-border bg-card/70 md:flex-wrap [&>*]:shrink-0">
           <Store className="w-4 h-4 text-primary" />
@@ -310,7 +310,7 @@ export function CounterPOSPage() {
                 ))}
               </div>
             </div>
-            <div className={`flex-1 overflow-y-auto p-3 content-start ${prefs.layout === "grid" ? "grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5" : "flex flex-col gap-1.5"}`}>
+            <div className={`md:flex-1 md:overflow-y-auto p-3 content-start ${prefs.layout === "grid" ? "grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5" : "flex flex-col gap-1.5"}`}>
               {filtered.map((d) => {
                 const inCart = lines.filter((l) => l.slug === d.slug).reduce((a, l) => a + l.qty, 0);
                 return (
@@ -331,7 +331,7 @@ export function CounterPOSPage() {
           </div>
 
           {/* register */}
-          <div className="w-full md:w-[440px] xl:w-[480px] flex flex-col bg-card/40 overflow-hidden">
+          <div className="w-full md:w-[440px] xl:w-[480px] md:shrink-0 flex flex-col bg-card/40 overflow-hidden">
             <div className="p-3 space-y-2.5 border-b border-border">
               <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-muted/60">
                 {([["takeaway", "Takeaway", ShoppingBag], ["dine_in", "Dine-in", UtensilsCrossed], ["delivery", "Delivery", Bike]] as const).map(([id, label, Icon]) => (
