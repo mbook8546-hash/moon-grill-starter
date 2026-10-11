@@ -104,7 +104,7 @@ export function PaymentBadge({ status }: { status: PaymentStatus }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.14em]",
+        "payment-chip inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.14em]",
         PAY_STYLES[status],
       )}
     >
@@ -118,7 +118,7 @@ export function PriorityTag({ priority }: { priority: Priority }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.2em]",
+        "priority-chip inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.2em]",
         priority === "vip"
           ? "border-lux bg-lux/18 text-lux"
           : "border-ruby/60 bg-ruby/14 text-ruby",
