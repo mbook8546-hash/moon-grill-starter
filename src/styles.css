@@ -4023,11 +4023,9 @@ img[loading="lazy"]:not([style]) {
   /* Orbit circles expand outward on hover, like stacked 3D depth layers. */
   .admin-caddy-shell :is(.panel-lux, .admin-dishes__card, .admin-dishes__metric):hover::before {
     background-size:
-      3.8rem 3.8rem,
-      5.6rem 5.6rem,
-      7.4rem 7.4rem,
-      9.2rem 9.2rem,
-      11rem 11rem,
+      1.9rem 1.9rem,
+      2.8rem 2.8rem,
+      3.7rem 3.7rem,
       100% 100%, 100% 100%, 100% 100%;
     opacity: 1;
   }
