@@ -3976,7 +3976,9 @@ img[loading="lazy"]:not([style]) {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(112deg, transparent 42%, oklch(from var(--color-cream) l c h / .06) 50%, transparent 58%);
+  background:
+    radial-gradient(9rem 9rem at 100% 0%, oklch(from var(--color-lux) l c h / .12), transparent 72%),
+    linear-gradient(112deg, transparent 42%, oklch(from var(--color-cream) l c h / .06) 50%, transparent 58%);
   opacity: .5;
   pointer-events: none;
 }
