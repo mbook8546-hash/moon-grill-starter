@@ -224,12 +224,6 @@ export function StatCard({
         t.ring,
       )}
     >
-      {/* Corner glow layer, tinted by tone */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{ background: `radial-gradient(9rem 9rem at 100% 0%, ${t.glow}, transparent 72%)` }}
-      />
       <div className="relative flex items-start justify-between gap-2">
         <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-dim sm:tracking-[0.22em]">{label}</p>
         {icon ? <span className={cn("icon-3d shrink-0", t.text)}>{icon}</span> : null}

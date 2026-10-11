@@ -3982,20 +3982,19 @@ img[loading="lazy"]:not([style]) {
     radial-gradient(circle, oklch(from var(--color-lux) l c h / .26) 0 62%, transparent 66%),
     radial-gradient(circle, oklch(from var(--color-lux) l c h / .18) 0 62%, transparent 66%),
     radial-gradient(circle, oklch(from var(--color-lux) l c h / .12) 0 62%, transparent 66%),
-    radial-gradient(5rem 5rem at 100% 0%, oklch(from var(--color-lux) l c h / .10), transparent 72%),
     linear-gradient(0deg, oklch(from var(--color-cream) l c h / .04), oklch(from var(--color-cream) l c h / .08)),
     linear-gradient(112deg, transparent 42%, oklch(from var(--color-cream) l c h / .05) 50%, transparent 58%);
   background-repeat: no-repeat;
   background-position:
-    calc(100% + .55rem) -.55rem,
-    calc(100% + .8rem) -.8rem,
-    calc(100% + 1.05rem) -1.05rem,
-    0 0, 0 0, 0 0;
+    calc(100% + .6rem) -.6rem,
+    calc(100% + .85rem) -.85rem,
+    calc(100% + 1.1rem) -1.1rem,
+    0 0, 0 0;
   background-size:
-    1.6rem 1.6rem,
-    2.3rem 2.3rem,
-    3rem 3rem,
-    100% 100%, 100% 100%, 100% 100%;
+    1.2rem 1.2rem,
+    1.7rem 1.7rem,
+    2.2rem 2.2rem,
+    100% 100%, 100% 100%;
   opacity: .85;
   pointer-events: none;
   transition: background-size .55s cubic-bezier(.22, 1, .36, 1), opacity .5s ease;
@@ -4023,10 +4022,10 @@ img[loading="lazy"]:not([style]) {
   /* Orbit circles expand outward on hover, like stacked 3D depth layers. */
   .admin-caddy-shell :is(.panel-lux, .admin-dishes__card, .admin-dishes__metric):hover::before {
     background-size:
-      1.9rem 1.9rem,
-      2.8rem 2.8rem,
-      3.7rem 3.7rem,
-      100% 100%, 100% 100%, 100% 100%;
+      1.3rem 1.3rem,
+      1.85rem 1.85rem,
+      2.4rem 2.4rem,
+      100% 100%, 100% 100%;
     opacity: 1;
   }
 }
