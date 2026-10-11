@@ -248,14 +248,14 @@ function OrdersDesk() {
       <div className="space-y-3">
         {rows.map((o) => (
           <Panel key={o.id} bodyClassName="p-0">
-            <div className="admin-orders__row">
+            <div className="admin-orders__row grid gap-4 p-4 lg:grid-cols-[1.15fr_1fr_1.1fr_1.05fr] lg:items-start">
               {/* identity */}
               <div className="admin-orders__identity space-y-1.5">
-                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+                <div className="flex items-center gap-2">
                   <Link
                     to="/admin/orders/$id"
                     params={{ id: o.id }}
-                    className="min-w-0 truncate font-hero num-lux text-lg text-frost hover:text-lux"
+                    className="font-hero num-lux text-lg tracking-wide text-frost hover:text-lux"
                   >
                     {o.code}
                   </Link>
@@ -264,7 +264,6 @@ function OrdersDesk() {
                 <p className="text-[11px] uppercase tracking-[0.14em] text-slate-dim">
                   {timeAgo(o.createdAt)}
                 </p>
-                <StatusBadge status={o.status} />
                 <p className="pt-1 text-sm font-bold text-frost">{o.customer.name}</p>
                 <p className="text-[11px] text-slate-dim">
                   {o.customer.phone} · {o.address.area}
@@ -314,10 +313,11 @@ function OrdersDesk() {
                     ))}
                   </select>
                 </Field>
+                <StatusBadge status={o.status} />
               </div>
 
               {/* rider + actions */}
-              <div className="admin-orders__rider space-y-2">
+              <div className="space-y-2 contents lg:block">
                 <div className="space-y-2 min-w-0">
                 <Field label="Rider">
                   <select
@@ -346,29 +346,29 @@ function OrdersDesk() {
                   </select>
                 </Field>
                 {o.acceptedAt ? (
-                  <p className="text-[11px] text-jade">Accepted {timeAgo(o.acceptedAt)}</p>
+                  <p className="text-[11px] text-emerald-300">Accepted {timeAgo(o.acceptedAt)}</p>
                 ) : o.riderId ? (
                   <p className="text-[11px] text-lux">Awaiting acceptance</p>
                 ) : null}
                 </div>
-              </div>
-                <div className="admin-orders__actions">
+                <div className="admin-orders__actions flex flex-wrap items-center gap-2 pt-1">
                   <Link
                     to="/admin/orders/$id"
                     params={{ id: o.id }}
-                    className="btn-ghost-lux"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-lux/25 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.14em] text-frost transition hover:border-lux/60"
                   >
                     <Eye className="h-3.5 w-3.5" /> View
                   </Link>
 
                   {o.status === "delivered" && (
-                    <GhostButton
+                    <button
+                      type="button"
                       onClick={() => setRatingOrder(o)}
-                      className="text-lux"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-lux/40 bg-lux/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.14em] text-lux transition hover:bg-lux/20"
                     >
                       <Star className={`h-3.5 w-3.5 ${o.rating ? "fill-lux text-lux" : "text-lux"}`} />
                       {o.rating ? `${o.rating}★ Rated` : "Rate Rider"}
-                    </GhostButton>
+                    </button>
                   )}
 
                   {confirmDelete === o.id ? (
@@ -396,6 +396,7 @@ function OrdersDesk() {
                     </DangerButton>
                   )}
                 </div>
+              </div>
             </div>
           </Panel>
         ))}
